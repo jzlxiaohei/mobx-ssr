@@ -43,8 +43,9 @@ function getInitStore(storeName, context) {
   return data;
 }
 
-function falsy() {
-  return false;
+
+function trusy() {
+  return true;
 }
 
 /**
@@ -61,7 +62,7 @@ function falsy() {
 
 function injectStore(options) {
 
-  const { storeMap, initData = PromiseIdFn, storeName, shouldReInitData = falsy } = options;
+  const { storeMap, initData = PromiseIdFn, storeName, shouldReInitData = trusy } = options;
   if (process.env.NODE_ENV !== 'production') {
     if (!storeName) {
       throw new error('you should provide storeName in injectStore');

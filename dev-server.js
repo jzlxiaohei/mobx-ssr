@@ -17,11 +17,11 @@ app.use(require('webpack-dev-middleware')(compiler, {
 app.use(require('webpack-hot-middleware')(compiler));
 
 app.use(express.static('dist'));
-// require('./server')(app);
+require('./server')(app);
 
-app.get('*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'src/index.dev.html'))
-});
+// app.get('*', function (req, res) {
+//   res.sendFile(path.join(__dirname, 'src/index.dev.html'))
+// });
 
 
 var devPort = 9533;

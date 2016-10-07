@@ -51,14 +51,13 @@ function addRules(model, rules, lazy = false) {
   if (!lazy) {
     const computedFns = {};
 
+    // TODO next major version of mobx (3.x) will not auto convert no-argument function to `computed`, make it explicit. see url below
+    // https://github.com/mobxjs/mobx/issues/532
     forOwn(rules, (value, key)=> {
-      if (!(key in model)) {
-        throw new Error(`${key} in rules but not in model`)
-      }
       computedFns[key] = ()=> {
         const checkFn = rules[key];
         return checkFn(model[key]);
-      }
+      };
     });
 
     extendObservable(model.$validState, computedFns);

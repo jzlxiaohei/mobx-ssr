@@ -37,7 +37,7 @@ const config = {
   entry: entries,
   output: {
     path: path.join(__dirname, './dist'),
-    publicPath: '',
+    publicPath: '/',
     filename: devEnv ? '[name].js' : '[name].[chunkhash].js',
     chunkFilename: '[chunkhash].js', //
     libraryTarget: 'umd',
@@ -102,7 +102,11 @@ const config = {
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        loaders: ['babel?cacheDirectory=true']
+        loader: 'babel',
+        query: devEnv ? {
+          // presets: ["react-hmre"],
+          cacheDirectory: true
+        } : {}
       }
     ]
   },
@@ -132,6 +136,7 @@ if (devEnv) {
   config.devtool = "#eval-source-map";
   config.debug = true;
   config.cache = true;
+
 }
 
 module.exports = config;

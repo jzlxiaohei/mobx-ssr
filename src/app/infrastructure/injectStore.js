@@ -43,6 +43,10 @@ function getInitStore(storeName, context) {
   return data;
 }
 
+function falsy() {
+  return false;
+}
+
 /**
  *
  * @param options
@@ -57,7 +61,7 @@ function getInitStore(storeName, context) {
 
 function injectStore(options) {
 
-  const { storeMap, initData = PromiseIdFn, storeName } = options;
+  const { storeMap, initData = PromiseIdFn, storeName, shouldReInitData = falsy } = options;
   if (process.env.NODE_ENV !== 'production') {
     if (!storeName) {
       throw new error('you should provide storeName in injectStore');
@@ -81,7 +85,8 @@ function injectStore(options) {
       constructor(props, context) {
         super(props, context);
         const initStore = getInitStore(storeName, context);
-        if (initStore) {
+        if (initStore && !shouldReInitData(initStore)) {
+          console.log('uss init');
           this.wasInit = true;
           this.storeProps = assignByPlainData(initStore);
         } else {
@@ -91,7 +96,7 @@ function injectStore(options) {
 
       componentDidMount() {
         const props = this.props;
-        if (!(this.wasInit || props.wasInit)) {
+        if (!this.wasInit) {
           initData(this.storeProps, props.params, props.location && props.location.query);
         }
       }

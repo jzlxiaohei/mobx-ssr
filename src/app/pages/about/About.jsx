@@ -25,7 +25,7 @@ class About extends React.Component {
 
   render() {
     console.log('render');
-    return <div onClick={this.handleClick}>{this.props.member.id} about 2222</div>
+    return <div onClick={this.handleClick}>{this.props.member.id} about 222</div>
   }
 }
 

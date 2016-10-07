@@ -32,7 +32,6 @@ class Home extends React.Component {
     return (
       <div>
         <div onClick={this.handleClick}>{this.props.topic.id} home 111</div>
-        <About/>
       </div>
     )
   }

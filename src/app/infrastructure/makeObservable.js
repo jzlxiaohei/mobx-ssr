@@ -6,9 +6,10 @@ import omit from 'lodash/omit';
 
 import { action } from 'mobx';
 const defaultMethods = [
-  'assign',
-  'merge',
-  'set'
+  '$assign',
+  '$merge',
+  '$set',
+  '$bindActions'
 ];
 
 function wrapModel(model, fields, excludedFields) {
@@ -22,15 +23,26 @@ function wrapModel(model, fields, excludedFields) {
     })
   }
 
-  model.set = action((fieldPath, value)=> {
+  model.$set = action((fieldPath, value)=> {
     set(model, fieldPath, value)
   });
-  model.assign = action(data => {
+  model.$assign = action(data => {
     assign(model, data)
   });
-  model.merge = action(data=> {
+  model.$merge = action(data=> {
     merge(model, data)
   });
+  model.$bindAction = (actions)=> {
+    for (let key in actions) {
+      if (process.env.NODE_ENV !== 'production') {
+        if (key in model) {
+          console.warn(`model has filed '${key}' already. old filed will be override`)
+        }
+      }
+      const value = actions[key];
+      model[key] = value.bind(model);
+    }
+  }
 }
 export default wrapModel
 

@@ -20,12 +20,12 @@ const Validators = {
 
 let ValidatorTypes = keyMirror(Validators);
 
-function addValidator(key, fn, refreshTypes) {
+function addValidator(key, fn, needRefreshTypes) {
   if (key in Validators) {
     console.warn(`${key} has already been in Validator, old validator will be override`);
   }
   Validators[key] = fn;
-  if (refreshTypes) {
+  if (needRefreshTypes) {
     ValidatorTypes = keyMirror(Validators);
   }
 }

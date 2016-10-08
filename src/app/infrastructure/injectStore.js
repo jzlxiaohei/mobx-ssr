@@ -3,8 +3,10 @@ import hoistNonStatics from 'hoist-non-react-statics';
 import isFunction from 'lodash/isFunction';
 import { observer } from 'mobx-react';
 import assign from 'lodash/assign';
-import canUseDom from './canUseDom';
 import { extendObservable } from 'mobx';
+import isNode  from './isNode';
+
+const isBrowser = !isNode;
 
 function PromiseIdFn(a) {
   return Promise.resolve(a);
@@ -37,7 +39,7 @@ function getInitStore(storeName, context) {
   let data;
   if (context.mobxStores && context.mobxStores[storeName]) {
     data = context.mobxStores[storeName];
-  } else if (canUseDom && window.__mobx_init_store && window.__mobx_init_store[storeName]) {
+  } else if (isBrowser && window.__mobx_init_store && window.__mobx_init_store[storeName]) {
     data = window.__mobx_init_store[storeName];
   }
   return data;
@@ -46,6 +48,10 @@ function getInitStore(storeName, context) {
 
 function trusy() {
   return true;
+}
+
+function falsy() {
+  return false;
 }
 
 /**
@@ -62,12 +68,15 @@ function trusy() {
 
 function injectStore(options) {
 
-  const { storeMap, initData = PromiseIdFn, storeName, shouldReInitData = trusy } = options;
+  const { storeMap, initData = PromiseIdFn, storeName } = options;
+
+  const shouldReInitData = isNode ? falsy : (options.shouldReInitData || trusy);
+
   if (process.env.NODE_ENV !== 'production') {
     if (!storeName) {
       throw new error('you should provide storeName in injectStore');
     }
-    if (canUseDom) {
+    if (isBrowser) {
       window.__storeNameMap = window.__storeNameMap || {};
       if (storeName in window.__storeNameMap) {
         throw new error(`duplicated storeName:${storeName}.`);
@@ -87,7 +96,6 @@ function injectStore(options) {
         super(props, context);
         const initStore = getInitStore(storeName, context);
         if (initStore && !shouldReInitData(initStore)) {
-          console.log('uss init');
           this.wasInit = true;
           this.storeProps = assignByPlainData(initStore);
         } else {
